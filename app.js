@@ -1,9 +1,12 @@
 // core module
 // file system
 const fs = require("fs");
-
 // input in console
 const readline = require("readline");
+// call function from anoter file
+const { Question, SaveData } = require("./Function");
+
+// ----------------------------------------------------------------
 
 // input stream and output stream
 const rl = readline.createInterface({
@@ -25,40 +28,17 @@ if (!fs.existsSync(file)) {
   fs.writeFileSync(file, "[]");
 }
 
-// function with variable props
-const question = (Question) => {
-  return new Promise((resolve, reject) => {
-    rl.question(Question, (answer) => {
-      resolve(answer);
-    });
-  });
-};
-
 const main = async () => {
-  // call function question and insert string props
-  const name = await question("What is your name? ");
-  const phone = await question("What is your mobile phone? ");
-  const email = await question("What is your email? ");
 
-  // array object
-  const contact = { name, phone, email };
+  // call function question and insert variable string
+  const name = await Question("What is your name? ", rl);
+  const phone = await Question("What is your mobile phone? ", rl);
+  const email = await Question("What is your email? ", rl);
 
-  // read file before write
-  const file = fs.readFileSync("data/contacts.json", "utf8");
+  // call function SaveData and insert variable
+  SaveData(name, phone, email, fs);
 
-  // change data string to object
-  const contacts = JSON.parse(file);
-
-  // add items to variable contact
-  contacts.push(contact);
-
-  // change data object to sting and write items to file
-  fs.writeFileSync("data/contacts.json", JSON.stringify(contacts));
-
-  // send respond when input success
-  console.log(
-    `Thank you for input your data! \nYour name ${name}, your mobile phone is ${phone}, and your email is ${email}`
-  );
+  // close / stop program
   rl.close();
 };
 
